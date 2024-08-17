@@ -1,8 +1,8 @@
 async function listaVideos() {
-    const reponse = await fetch('https://guilhermeboas.github.io/api-teste/videos.json');
+    const reponse = await fetch('http://localhost:3000/videos');
     const lista = await reponse.json()
 
-    return lista.videos
+    return lista
 }
 
 export const conectaAPI={

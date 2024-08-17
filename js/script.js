@@ -1,6 +1,9 @@
 import { conectaAPI } from "./conectaAPI.js"
 
-
+async function listaImportada(){
+    const lista = await conectaAPI.listaVideos()
+    return lista
+}
 
 function criarCard(obj) {
     const video = document.createElement('li')
@@ -18,11 +21,26 @@ function criarCard(obj) {
 
 const containerVideos = document.querySelector('.videos__container')
 
-async function listarVideos() {
-    const listaDeVideos = await conectaAPI.listaVideos()
-    console.log(listaDeVideos)
-    listaDeVideos.forEach(video => {containerVideos.append(criarCard(video))});
+async function listarVideos(promisse) {
+    containerVideos.innerHTML = ''
+    const lista = await promisse
+    
+    lista.forEach(video => {containerVideos.append(criarCard(video))});
 }
 
-listarVideos()
+listarVideos(listaImportada())
 
+// filtro sessão superior 
+
+const listaBtns = document.querySelectorAll('.superior__secao__container-wrapper a')
+
+listaBtns.forEach(btn => btn.addEventListener('click',()=>{
+    btn.name == 'Tudo'? listarVideos(listaImportada()):listaFiltrada(btn.name)
+    }
+))
+
+async function listaFiltrada(filtro){
+    const promessa = await fetch(`http://localhost:3000/videos?categoria=${filtro}`)
+    const lista = await promessa.json()
+    listarVideos(lista)
+}
